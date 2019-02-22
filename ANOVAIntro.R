@@ -12,7 +12,7 @@ library(ggplot2)
 library(plyr)
 
 #use summary(aov()) in order to run ANOVA and get stats value
-summary(aov(seeds~Cage+Topography,data=yearlydata))
+summary(aov(seeds~cage+Topo,data=nipomo2017))
 
 #use TukeyHSD to do post-poc analysis to tell you were the significance pairing is
 #When writing results you need the p value and the F value
