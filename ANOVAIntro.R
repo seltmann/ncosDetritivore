@@ -55,7 +55,8 @@ ggplot(aes(x=Topo,y=seeds,fill=Topo,color=Topo),
        data=nipomo2017) + geom_boxplot()
 
 # Put it into a separate dataframe in order to create panel graphs
-######---not working
+
+######---not working below this line
 
 SeedsGraph_Topo <- ggplot(aes(x=Topo,y=seeds,fill=Topo,color=Topo),
                           data=Seeds_Topo)+
