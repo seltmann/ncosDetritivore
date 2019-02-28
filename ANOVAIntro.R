@@ -35,8 +35,6 @@ summary(aov(seeds ~ cage+Topo,data=nipomo2017))
 #adjusted p-value < 0.05 = standard significant with only 5% chance that the differences are random or reject hypothesis with a 95% probability.
 TukeyHSD(aov(seeds~cage+Topo,data=nipomo2017))
 
-
-####-----------######
 #use the ddply function to separate data out as necessary to visualize data
 #here I used ddply to pull out all data with associated with Topography (all same topographies)
 #or identical fields within the column will be consolidated, what you do with the consolidated data varies
@@ -54,11 +52,8 @@ plot(x=nipomo2017$Topo,y=nipomo2017$seeds)
 ggplot(aes(x=Topo,y=seeds,fill=Topo,color=Topo),
        data=nipomo2017) + geom_boxplot()
 
-# Put it into a separate dataframe in order to create panel graphs
 
-######---not working below this line
-
-SeedsGraph_Topo <- ggplot(aes(x=Topo,y=seeds,fill=Topo,color=Topo),
+SeedsGraph_Topo <- ggplot(aes(x=Topo,y=avgseed,fill=Topo,color=Topo),
                           data=Seeds_Topo)+
   geom_bar(stat="identity",position="dodge",color="black",show.legend=FALSE)
 
