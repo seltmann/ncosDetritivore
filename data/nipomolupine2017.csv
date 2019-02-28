@@ -32,7 +32,7 @@ id,Slope,rep,Topo,Aspect,Scarification,cage,Eaten,Herbivory,Severity,seeds,ph,ec
 111,steep,3,North Steep,north,unscarified,big,yes,3,severe,38,5.57,38.7,6.995,0.06428302,0.8171943,2/16/2017,6/14/2017,4/26/2017,4/26/2017,118,69,69
 119,steep,3,North Steep,north,scarified,big,no,0,none,0,5.57,38.7,6.995,0.06428302,0.8171943,2/16/2017,4/26/2017,,,69,,
 219,steep,3,North Steep,north,scarified,big,yes,2,mild,5,5.57,38.7,6.995,0.06428302,0.8171943,3/14/2017,4/12/2017,,,29,,
-213,steep,1,Small Steep,small,unscarified,small,no,0,none,0,6.345,11.7,2.396,0.026917945,0.2678505,2/16/2017,4/12/2017,,,55,,
+213,steep,1,South Steep,small,unscarified,small,no,0,none,0,6.345,11.7,2.396,0.026917945,0.2678505,2/16/2017,4/12/2017,,,55,,
 70,steep,3,South Steep,south,unscarified,big,yes,3,severe,0,5.74,31.4,1.818,0.03967767,0.6011692,2/16/2017,4/26/2017,,,69,,
 141,steep,3,South Steep,south,unscarified,big,yes,3,severe,0,5.74,31.4,1.818,0.03967767,0.6011692,2/16/2017,4/26/2017,,,69,,
 322,steep,4,South Steep,south,unscarified,big,yes,1,mild,26,5.99,32.8,2.95,0.039004985,0.5322551,2/16/2017,4/26/2017,3/14/2017,3/28/2017,69,26,40

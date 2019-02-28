@@ -44,7 +44,7 @@ TukeyHSD(aov(seeds~cage+Topo,data=nipomo2017))
 #Calculated the standard error (use this not deviation) which is the SD/sqrt(n)
 Seeds_Topo <- ddply(nipomo2017, c("Topo"),summarise,
                     avgseed = mean(seeds),
-                    error = sd(seeds)/(sqrt(length(seeds)))) #why are some error 
+                    error = sd(seeds)/(sqrt(length(seeds))))
 
 #basic bar plot
 plot(x=nipomo2017$Topo,y=nipomo2017$seeds)
@@ -64,18 +64,16 @@ SeedsGraph_Topo <- ggplot(aes(x=Topo,y=seeds,fill=Topo,color=Topo),
 
 
 #below is the graph with error bars added
-SeedsGraph_Topo <- ggplot(aes(x=Topography,y=avgseed,fill=Topography,color=Topography),
-                          data=Seeds_Topo)+
-  geom_bar(stat="identity",position="dodge",color="black",show.legend=FALSE)
-+geom_errorbar(aes(ymax=avgseed+error, ymin=avgseed-error),
-               position="dodge",color="black",width=0.9) 
+SeedsGraph_Topo <- ggplot(aes(x=Topo,y=avgseed,fill=Topo,color=Topo),
+                          data=Seeds_Topo) +
+  geom_bar(stat="identity",position="dodge",color="black",show.legend=FALSE) +
+  geom_errorbar(aes(ymax=avgseed+error, ymin=avgseed-error), position="dodge",color="black",width=0.9) 
 
 #below is more custom options I set:
-SeedsGraph_Topo <- ggplot(aes(x=Topography,y=avgseed,fill=Topography,color=Topography),
-                          data=Seeds_Topo)+
-  geom_bar(stat="identity",position="dodge",color="black",show.legend=FALSE)
-+geom_errorbar(aes(ymax=avgseed+error, ymin=avgseed-error),
-               position="dodge",color="black",width=0.9) 
-+ ylab("Avg Seed Pod Production")+xlab("Topography")
-+theme(panel.border=element_rect(color="black",size=1,fill=NA))
+SeedsGraph_Topo <- ggplot(aes(x=Topo,y=avgseed,fill=Topo,color=Topo),
+                          data=Seeds_Topo) +
+  geom_bar(stat="identity",position="dodge",color="black",show.legend=FALSE) + 
+  geom_errorbar(aes(ymax=avgseed+error, ymin=avgseed-error), position="dodge",color="black",width=0.9) + 
+  ylab("Avg Seed Pod Production")+xlab("Topo") + 
+  theme(panel.border=element_rect(color="black",size=1,fill=NA))
 
