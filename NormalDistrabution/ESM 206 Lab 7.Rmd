@@ -1,0 +1,204 @@
+---
+title: "ESM 206 Lab 7"
+author: "Shelley Bennett"
+date: "November 14, 2017"
+output:
+  html_document: default
+  word_document: default
+subtitle: Linear Regression, Diagnostics, Correlation, Model Fit, and a Graph
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_packages, include=FALSE}
+
+library(tidyverse)
+library(knitr)
+
+```
+
+#Part 1. Get some data
+
+Source: R.J. Gladstone (1905). "A Study of the Relations of the Brain to the Size of the Head", Biometrika, Vol. 4, pp. 105-123.
+
+Description: Brain weight (g) and head size (cubic cm) for 237 adults classified by gender and age
+
+**Columns/Variables**
+
+Gender: 1 = male, 2 = female
+
+Age Range: 1 = 20-46 years old, 2 = 46+ years old
+
+Head size (cm$^3$)
+
+Brain weight (g)
+
+```{r load_data, include=FALSE}
+
+head_brain <- read_csv("~/Documents/Shelley/UCSB/Classes/ESM 206/Lab 7/head_brain.csv")
+
+```
+
+
+#Part 2. Fix it up
+
+substr function to select only the first 4 characters in values in the brains column
+
+```{r fix_data}
+
+ head_brain$brain <- as.numeric(substr(head_brain$brain, 1, 4)) # To keep only the first 4 characters in a string and convert the data to numbers (numeric), overwriting the original column.
+
+head_brain <- head_brain %>%
+  filter(brain != "NA")
+
+# To remove last character, can find code on google and copy/paste.
+
+```
+
+#Part 3. Visualize it
+
+```{r visualize_data}
+# Graph the data as a scatterplot with headsize as the independent variable (x).
+
+ggplot(head_brain, aes(x = head, y = brain))+
+  geom_point()
+
+```
+
+Four assumptions of linear regresssion:
+
+1. Linear relationship (yes)
+
+2. Independent residuals (yes)
+
+3. Constant variances of the residuals (maybe?)
+
+4. Normality of residuals (don't know that yet, post-hoc test)
+
+#Part 4. Linear Regression by OLS
+
+Have to run the linear regression *then* check the assumptions more thoroughly.
+
+To run linaer regression in R: lm(y~x, data = df)
+
+```{r linear_model}
+
+brain_lm <- lm(brain ~ head, data = head_brain)
+summary(brain_lm)
+
+```
+
+###Making sure assumptions are met:
+Before we look at the results of our statistical test, first we need to make sure our assumptions are met. To do this, go into console, type plot(brain_lm), click return and R will give you all 4 plots
+
+####Residuals vs. Fitted (first and third plot): 
+Do the points seem equally distributed? (homoscedastic vs. heteroscedastic)
+
+####QQ plot (second plot):
+Are the residuals normally distributed?
+
+####Cook's distance for possible outliers (fourth plot):
+Are there any single points that heavily weight/skew your model results? If so, will show up outside a red dashed line on diagnostic plot. This is not necessarily mean you should not include these points in your linear regression.
+
+```{r all_4_diagnostics}
+
+# This comprehensive look is better than just typing into console window
+
+par(mfrow = c(2,2))
+plot(brain_lm)
+
+```
+
+
+#Part 6. Thinking about our model output
+
+Check out Gauchospace- "Interpreting lm() outputs"
+
+###Model equation
+
+(For every increase in 1 cubic cm in head size, there is an increase in 0.26 g increase in brain weight.)
+
+$$brain~size = 0.26(head~size) + 337.25$$
+
+H0: The coefficients for the variables (b0 and b1) are zero (i.e., there is no relationship between head size and brain weight).
+
+HA: The coefficients are not equal to zero (i.e., there is a relationship between head size and brain weight).
+
+What we conclude based on our p-values for the coefficients is that both the intercept and the coefficient b1 are significantly different than zero, meaning head volume specifically predits brain weight.
+
+###Overall model significance
+
+We want to know if our *overall model* significantly predicts the amount of variance in the outcome (dependent) variable. Does our model predict the outcome variable (brain weight) better than a model that does not include head size (i.e. randomness)? Is there a significant relationship between head size and brain weight?
+
+In this case, our overall model p-value is << 0.001, so we can say "head size significantly predicts brain weight (F (1,233) = 385.2, *p* < 0.001)."
+
+###R$^2$ - coefficient of determination
+
+We will use the multiple R-squared for this  model (1 predictor variable). 
+
+When you have >1 predictor variable, your R$^2$ will inevitably get better every time you add a variable, so you would want to use the Adjusted R-squared to account for that artifact.
+
+$R^2$ is the amount of variance in the outcome variable that is explained by your model. In our case, $R^2$ = 0.62 which means our model explains 62% of the variance in brain weight (in other words, 62% of the variation in  brain weight is explained by head size).
+
+
+#Part 7. Correlation (Pearson's r)
+
+Can be positive or negative, is only valid for linear relationships.
+
+```{r pearsons_r}
+
+cor.test(head_brain$head, head_brain$brain)
+
+#value of 0.79 (r)
+
+#There is a strong and significant positive correlation between head size and brain weight (Pearson's *r* = 0.79, t(233) = 19.6, *p* <0.001). 
+
+```
+
+
+#Part 8. Communicating Results in Text
+
+There is a strong and significant positive correlation between head size and brain weight (Pearson's *r* = 0.79, t(233) = 19.6, *p* <0.001). Linear regression revealed that head size significantly predicts brain weight (F(1,233) = 385.2, *p* <0.001) with R$^2$ = 0.62. Brian weight (g) is equal to 0.26 (head size (cm$^3$)) + 337.3; both the coefficint and intercept are significantly non-zero (*p* < 0.001 in all cases).
+
+
+#Part 9. Create a graph with the model added (and with a confidence interval)
+
+We'll use the predict() function to give the actual values predicted by your model given each x value in your dataset (head vol). We'll use this to generate a trendline.
+
+```{r predict_and_graph}
+
+#Make predictions (value and 95% CI)
+
+predicted <- predict(brain_lm, interval = "confidence", level = 0.95) #predicted brain weight for every head size in the data set (also lower and upper bound on confidence interval)
+#predicted
+
+#Create a complete data frame of the original data + the predicted data
+
+full_data <- data.frame(head_brain, predicted)
+#View (full_data)
+
+#Graph the original data + predicted data + confidence interval
+
+ggplot(full_data, aes(x = head, y = brain))+
+  geom_point()+
+  geom_line(aes(x = head, y = fit)) +
+  geom_ribbon(aes(x = head, ymin = lwr, ymax = upr), alpha = 0.3) +
+  annotate("text", x = 3200, y = 1550, label = "y = 0.26x + 337.25")+
+  annotate("text", x = 3200, y = 1500, label = "italic(R) ^ 2 == 0.62", parse = TRUE)+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  labs(y = expression(Brain~Mass~(g)), x = expression(Head~Size~(cm^{3})))+
+  scale_x_continuous(expand = c(0,0))+
+  scale_y_continuous(expand = c(0,0)) #gets rid of gap between trend line and axes bars
+
+
+
+```
+
+**Figure 1. Relationship between head size and brain mass.** Brain mass (g) is significantly predicted by head size (cm$^3$) based on 235 measurements (F(1,233) = 385.2, *p* < 0.001, $R^2$ = 0.62). Gray ribbon indicates 95% confidence interval for the predicted value. Source: (nice citation).
+
+
+
+
